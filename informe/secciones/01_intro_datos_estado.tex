@@ -1,0 +1,69 @@
+\section{Introducción}
+
+\subsection{Contexto y descripción del problema}
+La diabetes tipo 2 reúne entre el 90\% y el 95\% de los casos diagnosticados de diabetes y es, a la vez, la forma que más se puede prevenir: buena parte de su riesgo depende del peso, la actividad física y la alimentación, factores que la persona puede modificar \cite{xie2019}. La dificultad está en saber a tiempo quién está en riesgo, porque eso suele exigir exámenes de laboratorio que no todo el mundo tiene a la mano. Un modelo entrenado con datos de encuesta, sin pruebas clínicas, puede servir como un primer filtro de bajo costo que señale a quién conviene remitir a una evaluación más completa; no reemplaza el diagnóstico médico, pero ayuda a priorizar.
+
+Este trabajo usa el \textit{Behavioral Risk Factor Surveillance System} (BRFSS), la encuesta telefónica que los Centros para el Control y la Prevención de Enfermedades (CDC) de Estados Unidos aplican cada año a cientos de miles de adultos. La diabetes tipo 2 aparece ligada de forma consistente a la edad, el índice de masa corporal (IMC), la actividad física, la dieta y el consumo de tabaco o alcohol \cite{majcherek2025}, y todas esas variables están en el BRFSS. El problema concreto es estimar, a partir de once variables demográficas (sexo, edad, raza/etnia, educación, ingreso), antropométricas (categoría de IMC) y de estilo de vida (actividad física, tabaquismo, alcohol, frutas y vegetales) de la edición 2025, si un respondiente tiene diabetes diagnosticada.
+
+\subsection{Paradigma de aprendizaje}
+Como la respuesta a la pregunta de diagnóstico está disponible para casi todos los registros, el problema se aborda con aprendizaje supervisado, en la forma de una clasificación binaria (diabetes sí/no). Ignorar esa etiqueta, como haría un enfoque no supervisado, no tendría sentido; tampoco hay escasez de etiquetas que justifique uno semisupervisado, ni un agente que actúe de forma secuencial sobre un entorno, como exigiría el aprendizaje por refuerzo.
+
+El resto del documento está organizado así: la Sección~\ref{sec:datos} describe la base de datos; la \ref{sec:estado}, los trabajos previos y qué se tomó de ellos; la \ref{sec:entrenamiento}, el diseño experimental y los resultados de los cinco modelos; la \ref{sec:reduccion}, la reducción de dimensión, y la \ref{sec:conclusiones}, la discusión y las conclusiones.
+
+\section{Datos}\label{sec:datos}
+Se usó el archivo público del BRFSS 2025, que combina las encuestas de línea fija y celular de 47 estados, el Distrito de Columbia, Guam y Puerto Rico. California, Misisipi, Nevada y las Islas Vírgenes no alcanzaron el mínimo de datos requerido ese año y no aparecen, lo que limita un poco la representatividad nacional. El archivo trae 356.158 registros y 284 variables. De ellas se tomaron once predictoras, todas de las variables calculadas por el CDC (prefijo \texttt{\_}), porque ya vienen con categorías agrupadas y un código de faltante consistente (Cuadro~\ref{tab:variables}). Por eso, por ejemplo, el ingreso tiene 7 rangos (\texttt{\_INCOMG1}) y la educación 4 niveles (\texttt{\_EDUCAG}), en lugar de los 11 y 6 de las preguntas originales.
+
+\begin{table}[!t]
+\centering
+\caption{Variables predictoras, número de categorías válidas y porcentaje de datos faltantes en la muestra analítica (N = 342.539)}
+\label{tab:variables}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcr@{}}
+\toprule
+\textbf{Grupo} & \textbf{Variable (código BRFSS)} & \textbf{Niveles} & \textbf{Falt.} \\
+\midrule
+Demográfica & Sexo (\texttt{\_SEX}) & 2 & 0,00\% \\
+ & Edad, grupos de 5 años (\texttt{\_AGEG5YR}) & 13 & 1,86\% \\
+ & Raza/etnia (\texttt{\_RACEGR3}) & 5 & 2,31\% \\
+ & Nivel educativo (\texttt{\_EDUCAG}) & 4 & 0,58\% \\
+ & Ingreso (\texttt{\_INCOMG1}) & 7 & 19,88\% \\
+Antropom. & Categoría de IMC (\texttt{\_BMI5CAT}) & 4 & 9,10\% \\
+Estilo de vida & Actividad física (\texttt{\_TOTINDA}) & 2 & 0,26\% \\
+ & Fumador (\texttt{\_SMOKER3}) & 4 & 5,80\% \\
+ & Alcohol excesivo (\texttt{\_RFDRHV9}) & 2 & 8,10\% \\
+ & Frutas $\geq$1 vez/día (\texttt{\_FRTLT1A}) & 2 & 13,05\% \\
+ & Vegetales $\geq$1 vez/día (\texttt{\_VEGLT1A}) & 2 & 15,03\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La variable objetivo, \texttt{DIABETE4}, corresponde a la pregunta ``¿Alguna vez un médico le ha dicho que tiene diabetes?''. En toda la encuesta hay 51.827 respuestas ``sí'', 2.671 ``sí, solo durante el embarazo'', 290.712 ``no'', 10.166 ``prediabetes'' y 782 entre ``no sabe'', ``rehusó'' y en blanco. Se dejaron por fuera la diabetes gestacional, porque es transitoria, y la prediabetes, siguiendo a Xie et al. \cite{xie2019}, de modo que la clase positiva solo contiene diagnósticos consolidados. La muestra analítica queda en 342.539 registros: 51.827 positivos (15,13\%) y 290.712 negativos (84,87\%), un desbalance moderado parecido al que reportan Chowdhury et al. \cite{chowdhury2024} en años anteriores.
+
+En el BRFSS, ``no sabe'' y ``rehusó'' tienen un código propio (9 en casi todas las variables y 14 en la edad), y en \texttt{\_BMI5CAT} el faltante es una celda vacía. Todos se unificaron como dato faltante. Ingreso, vegetales y frutas son las variables con más faltantes (13\% a 20\%); el resto está por debajo del 10\%. Cómo se trataron y codificaron se explica en la Sección~\ref{sec:prep}.
+
+\section{Estado del Arte}\label{sec:estado}
+Se revisaron cuatro artículos de revista que predicen diabetes con el BRFSS; el Cuadro~\ref{tab:estado} los resume. Xie et al. \cite{xie2019} trabajan casi el mismo problema que este proyecto, diabetes tipo 2 con 138.146 respondientes de 2014: comparan SVM, árbol de decisión, regresión logística, bosque aleatorio, red neuronal y Naive Bayes con una partición \textit{holdout} 2/3--1/3, y aplican SMOTE solo sobre el entrenamiento. Su red neuronal tiene el mejor AUC (0,79) pero la peor sensibilidad, mientras que el árbol, con la menor exactitud, es el que más positivos detecta (51,6\%). Majcherek et al. \cite{majcherek2025} prueban dieciocho algoritmos sobre 253.680 registros de 2015, con partición 80/20 y validación cruzada estratificada; Extra Trees alcanza más de 90\% de exactitud y AUC de 0,99, y el análisis SHAP señala al IMC, la edad, la salud general y el ingreso como las variables de mayor peso. Chowdhury et al. \cite{chowdhury2024} se centran en el desbalance (18\% de positivos en 438.693 registros de 2021): comparan SMOTEN, ENN, SMOTE-Tomek y SMOTE-ENN aplicadas después de partir los datos, documentan que balancear antes de partir infla las métricas, y con ENN y \textit{gradient boosting} suben la sensibilidad de 57,5\% a 71,7\%. Ekambaram et al. \cite{ekambaram2026} comparan árboles, bosque aleatorio, XGBoost y \textit{gradient boosting} con una red convolucional sobre más de 400.000 registros; la red llega a 93,34\% de exactitud, aunque el resumen no detalla la validación ni cómo se trató el desbalance.
+
+\begin{table}[!t]
+\centering
+\caption{Resumen de los trabajos revisados (Exact.: exactitud; Sens.: sensibilidad)}
+\label{tab:estado}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}L{1.5cm}L{1.3cm}L{1.8cm}L{1.85cm}L{1.55cm}@{}}
+\toprule
+\textbf{Trabajo} & \textbf{Datos} & \textbf{Modelos} & \textbf{Validación y desbalance} & \textbf{Mejor resultado} \\
+\midrule
+Xie et al. \cite{xie2019} & BRFSS 2014, 138.146 & SVM, árbol, RL, RF, red neuronal, NB & \textit{Holdout} 2/3--1/3; SMOTE en entrenamiento & Exact. 74--82\%; AUC 0,79 \\
+\addlinespace
+Majcherek et al. \cite{majcherek2025} & BRFSS 2015, 253.680 & 18 modelos (RL, KNN, ensambles) & 80/20 y VC estratificada; SHAP & Extra Trees: exact. $>$90\%, AUC 0,99 \\
+\addlinespace
+Chowdhury et al. \cite{chowdhury2024} & BRFSS 2021, 438.693 & RL, RF, GB, AdaBoost & 80/20; 4 técnicas de balanceo tras partir & GB + ENN: sens. 71,7\% \\
+\addlinespace
+Ekambaram et al. \cite{ekambaram2026} & BRFSS, $>$400.000 & Árbol, RF, XGBoost, GB, CNN & No detallada en el resumen & CNN: exact. 93,34\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+De esta revisión salen cuatro decisiones concretas para el diseño experimental. Primera, de Chowdhury et al. y Xie et al.: todo balanceo, imputación o codificación se ajusta dentro de un \textit{pipeline}, solo con los datos de entrenamiento de cada pliegue, y el conjunto de prueba se aparta desde el inicio. Segunda, del contraste que muestran Xie et al. entre AUC y sensibilidad: el AUC se usa para elegir hiperparámetros, pero la sensibilidad se vigila como métrica clave. Tercera, como Chowdhury et al. no encuentran que el sobremuestreo sintético sea siempre la mejor opción, se compara SMOTE contra la ponderación de clases antes de adoptarlo. Cuarta, como los resultados de exactitud cercanos a 90\% o más vienen de trabajos que no reportan la sensibilidad ni el manejo del desbalance, la exactitud no se usa como criterio de selección.

@@ -1,0 +1,7 @@
+\begin{abstract}
+En este trabajo se construye un clasificador que estima si un adulto tiene diabetes a partir de once preguntas del \textit{Behavioral Risk Factor Surveillance System} (BRFSS) 2025 sobre su perfil demográfico, su índice de masa corporal y sus hábitos, con la idea de usarlo como tamizaje inicial sin exámenes de laboratorio. Tras excluir la diabetes gestacional y la prediabetes quedan 342.539 registros, de los cuales el 15,13\% son casos positivos. Se compararon regresión logística, KNN, bosque aleatorio, red neuronal y SVM con kernel RBF, con validación cruzada estratificada, el desbalance corregido dentro de cada pliegue y un conjunto de prueba reservado desde el inicio. Los cinco modelos llegan a un AUC de 0,77 en prueba, sin diferencias significativas entre ellos; la SVM es la que más casos detecta, con una sensibilidad de 0,80. SMOTE no mejoró frente a la ponderación de clases. En la reducción de dimensión, retirar sexo, frutas y vegetales no cambia el desempeño; PCA lo conserva con 45 componentes en la regresión logística y 20 en la SVM, y UMAP pierde entre 7 y 13 puntos de AUC en su versión estándar y sobreajusta en la supervisada. El desempeño parece limitado por la información que traen las variables de encuesta más que por el modelo.
+\end{abstract}
+
+\begin{IEEEkeywords}
+diabetes tipo 2, aprendizaje supervisado, BRFSS, desbalance de clases, reducción de dimensión.
+\end{IEEEkeywords}

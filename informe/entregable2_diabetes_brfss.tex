@@ -1,0 +1,52 @@
+\documentclass[journal]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{cite}
+\usepackage{url}
+
+\renewcommand{\abstractname}{Resumen}
+\renewcommand{\IEEEkeywordsname}{Palabras clave}
+\renewcommand{\tablename}{Cuadro}
+\graphicspath{{figuras/}}
+
+\begin{document}
+
+\title{Estimación del Riesgo de Diabetes Tipo 2 a partir de Factores Demográficos, Antropométricos y de Estilo de Vida Mediante Aprendizaje de Máquina}
+
+\author{Alejandro Gallego Alarcón, Andrés Eduardo Pabón Roldán, Paula Andrea Guarín Guarín
+\thanks{Ingeniería de Sistemas, Universidad de Antioquia, Medellín/Caucasia, Colombia.}}
+
+\markboth{}{}
+
+\maketitle
+
+\input{secciones/00_resumen}
+\input{secciones/01_intro_datos_estado}
+\input{secciones/02_entrenamiento}
+\input{secciones/03_reduccion}
+\input{secciones/04_conclusiones}
+
+\begin{thebibliography}{4}
+
+\bibitem{xie2019}
+Z. Xie, O. Nikolayeva, J. Luo, and D. Li, ``Building risk prediction models for type 2 diabetes using machine learning techniques,'' \emph{Prev. Chronic Dis.}, vol. 16, Art. no. 190109, 2019, doi: 10.5888/pcd16.190109.
+
+\bibitem{majcherek2025}
+D. Majcherek, A. Ciesielski, and P. Sobczak, ``AI-driven analysis of diabetes risk determinants in U.S. adults: Exploring disease prevalence and health factors,'' \emph{PLoS ONE}, vol. 20, no. 9, Art. no. e0328655, Sep. 2025, doi: 10.1371/journal.pone.0328655.
+
+\bibitem{chowdhury2024}
+M. M. Chowdhury, R. S. Ayon, and M. S. Hossain, ``An investigation of machine learning algorithms and data augmentation techniques for diabetes diagnosis using class imbalanced BRFSS dataset,'' \emph{Healthcare Analytics}, vol. 5, Art. no. 100297, Jun. 2024, doi: 10.1016/j.health.2023.100297.
+
+\bibitem{ekambaram2026}
+G. Ekambaram, T. Rakkiannan, N. Palanisamy, S. Muthusamy, A. Singh, K. K. Sadasivuni, and M. Krishnamoorthy, ``A novel method for early detection and prediction of diabetes using various machine learning and deep learning models,'' \emph{Int. J. Diabetes Dev. Ctries.}, vol. 46, pp. 278--295, Mar. 2026, doi: 10.1007/s13410-025-01590-y.
+
+\end{thebibliography}
+
+\end{document}

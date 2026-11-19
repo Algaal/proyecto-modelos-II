@@ -1,0 +1,12 @@
+# Datos del BRFSS (se descargan con el notebook)
+LLCP2025XPT.zip
+LLCP2025.XPT*
+brfss2025_reducido.csv
+
+# Archivos auxiliares de LaTeX
+informe/*.aux
+informe/*.log
+informe/*.out
+
+.ipynb_checkpoints/
+__pycache__/
