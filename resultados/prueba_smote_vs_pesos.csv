@@ -1,0 +1,13 @@
+Modelo,Comparación,Métrica,Diferencia media,valor p
+Regresión logística,SMOTE − ponderación,AUC,-0.0038,0.0005
+Regresión logística,SMOTE − ponderación,Sensibilidad,-0.0102,0.0301
+Regresión logística,SMOTE − ponderación,F1,-0.0046,0.1717
+Regresión logística,SMOTEN − ponderación,AUC,-0.0394,0.0018
+Regresión logística,SMOTEN − ponderación,Sensibilidad,-0.1107,0.0001
+Regresión logística,SMOTEN − ponderación,F1,-0.0295,0.0021
+Bosque aleatorio,SMOTE − ponderación,AUC,-0.0063,0.0646
+Bosque aleatorio,SMOTE − ponderación,Sensibilidad,-0.2987,0.0
+Bosque aleatorio,SMOTE − ponderación,F1,-0.0269,0.0135
+Bosque aleatorio,SMOTEN − ponderación,AUC,-0.038,0.0008
+Bosque aleatorio,SMOTEN − ponderación,Sensibilidad,-0.1913,0.0
+Bosque aleatorio,SMOTEN − ponderación,F1,-0.0307,0.0051
