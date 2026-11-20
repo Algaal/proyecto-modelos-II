@@ -1,0 +1,9 @@
+Modelo,Variables,n variables,Columnas,AUC val.,Sensibilidad val.,Dif. AUC,valor p
+Regresión logística,Todas (11),11,57,0.76 ± 0.01,0.75 ± 0.01,0.0,
+Regresión logística,Sin Sexo,10,55,0.76 ± 0.01,0.75 ± 0.01,-0.0016,0.13531011322365846
+Regresión logística,"Sin Sexo, Frutas",9,52,0.76 ± 0.01,0.75 ± 0.01,-0.0013,0.2414913533948192
+Regresión logística,"Sin Sexo, Frutas, Vegetales",8,49,0.76 ± 0.01,0.75 ± 0.02,-0.0012,0.27697253794560306
+SVM (RBF),Todas (11),11,39,0.76 ± 0.01,0.78 ± 0.01,0.0,
+SVM (RBF),Sin Sexo,10,37,0.75 ± 0.01,0.77 ± 0.02,-0.0025,0.040283178833845454
+SVM (RBF),"Sin Sexo, Frutas",9,33,0.75 ± 0.01,0.78 ± 0.02,-0.0021,0.09544407167907072
+SVM (RBF),"Sin Sexo, Frutas, Vegetales",8,29,0.75 ± 0.01,0.78 ± 0.01,-0.002,0.09263883108999948
