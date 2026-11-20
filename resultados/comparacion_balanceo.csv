@@ -1,0 +1,11 @@
+Modelo,Estrategia,AUC,Sensibilidad,Especificidad,F1,Tiempo (s)
+Regresión logística,Sin corrección,0.76 ± 0.01,0.04 ± 0.01,0.99 ± 0.00,0.08 ± 0.01,0.6
+Regresión logística,Ponderación de clases,0.76 ± 0.01,0.75 ± 0.01,0.64 ± 0.01,0.40 ± 0.01,0.6
+Regresión logística,SMOTE,0.75 ± 0.01,0.74 ± 0.02,0.64 ± 0.01,0.39 ± 0.01,1.0
+Regresión logística,SMOTEN,0.72 ± 0.01,0.64 ± 0.02,0.67 ± 0.00,0.37 ± 0.01,13.8
+Regresión logística,Submuestreo aleatorio,0.76 ± 0.01,0.74 ± 0.01,0.64 ± 0.02,0.40 ± 0.01,0.5
+Bosque aleatorio,Sin corrección,0.74 ± 0.01,0.00 ± 0.00,1.00 ± 0.00,0.00 ± 0.00,10.9
+Bosque aleatorio,Ponderación de clases,0.75 ± 0.01,0.72 ± 0.02,0.65 ± 0.02,0.39 ± 0.01,12.2
+Bosque aleatorio,SMOTE,0.74 ± 0.01,0.42 ± 0.03,0.84 ± 0.01,0.36 ± 0.01,22.0
+Bosque aleatorio,SMOTEN,0.71 ± 0.01,0.53 ± 0.02,0.75 ± 0.01,0.36 ± 0.01,26.5
+Bosque aleatorio,Submuestreo aleatorio,0.74 ± 0.01,0.72 ± 0.01,0.63 ± 0.02,0.38 ± 0.01,5.9
